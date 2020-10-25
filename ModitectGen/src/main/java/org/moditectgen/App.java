@@ -79,7 +79,7 @@ public class App extends Application {
         }        
 
         stage.setScene(scene);
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/img/icon_256x256.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/img/icon_1024x1024.png")));
         stage.show();
 
         
