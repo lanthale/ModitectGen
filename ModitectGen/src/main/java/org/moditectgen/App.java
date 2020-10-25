@@ -122,7 +122,7 @@ public class App extends Application {
             path = System.getProperty("user.dir");
         }
 
-        path = path + File.separator + "JEditFX";
+        path = path + File.separator + "ModitectGen";
         if (new File(path).exists() == false) {
             new File(path).mkdirs();
         }
