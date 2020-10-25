@@ -84,7 +84,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        pattern: JeditFX\target\package\*.msi
+        pattern: ModitectGen\target\package\*.msi
         release-url: ${{ steps.get_release.outputs.upload_url }}
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
