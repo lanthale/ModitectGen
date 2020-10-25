@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Copyright (c) 2019, Gluon
+    All rights reserved.
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+        * Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+        * Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+        * Neither the name of Gluon, any associated website, nor the
+    names of its contributors may be used to endorse or promote products
+    derived from this software without specific prior written permission.
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL GLUON BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="pane" prefHeight="500.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.moditectgen.ModitectGenController">
+   <children>
+      <VBox fx:id="vbox" prefHeight="400.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <MenuBar fx:id="menuBar">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="Q" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                           </accelerator></MenuItem>
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                        <MenuItem mnemonicParsing="false" text="Cut" />
+                        <MenuItem mnemonicParsing="false" text="Copy" />
+                        <MenuItem mnemonicParsing="false" text="Paste" />
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <HBox prefHeight="40.0" prefWidth="600.0">
+               <children>
+                  <ToolBar prefHeight="69.0" prefWidth="800.0" HBox.hgrow="ALWAYS">
+                     <items>
+                        <VBox>
+                           <children>
+                              <HBox alignment="CENTER" spacing="5.0">
+                                 <children>
+                                    <Label text="Select jar for generation:" />
+                                    <TextField fx:id="jarSelectionText" />
+                                    <Button id="custombutton" fx:id="jarSelectionButton" mnemonicParsing="false" onAction="#jarSelectionAction" prefHeight="33.0" prefWidth="33.0">
+                                       <graphic>
+                                          <FontAwesomeIconView fill="#6e6d6d" glyphName="FOLDER_OPEN" size="24" />
+                                       </graphic>
+                                    </Button>
+                                    <Label text="Select directory of other jars/modules:">
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <TextField fx:id="jarDirSelection" />
+                                    <Button id="custombutton" fx:id="dirSelectionButton" mnemonicParsing="false" onAction="#dirSelectionAction" prefHeight="33.0" prefWidth="33.0">
+                                       <graphic>
+                                          <FontAwesomeIconView fill="#6e6d6d" glyphName="FOLDER_OPEN" size="24" />
+                                       </graphic>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </VBox.margin>
+                                 <children>
+                                    <Button fx:id="generateButton" mnemonicParsing="false" onAction="#generateAction" prefWidth="150.0" text="Generate pom.xml entry" />
+                                    <CheckBox fx:id="multireleaseCheckbox" mnemonicParsing="false" onAction="#multiReleaseAction" selected="true" text="Mulit-release">
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
+                                    </CheckBox>
+                                    <TextField fx:id="releaseVersionField" prefHeight="21.0" prefWidth="27.0" text="11">
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
+                                    </TextField>
+                                    <CheckBox fx:id="ignoreMIssingDepsCheckbox" mnemonicParsing="false" selected="true" text="Ignore-missing-dep">
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
+                                    </CheckBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </items>
+                  </ToolBar>
+               </children>
+            </HBox>
+            <TextArea fx:id="textArea" prefHeight="399.0" prefWidth="700.0" />
+            <HBox prefHeight="27.0" prefWidth="600.0" style="-fx-border-color: lightgrey;">
+               <children>
+                  <StackPane fx:id="progressInfo" prefHeight="25.0" prefWidth="204.0">
+                     <children>
+                        <ProgressBar fx:id="progressBar" prefWidth="200.0" progress="0.0" />
+                        <Label fx:id="progressLabel" text="Label" />
+                     </children>
+                  </StackPane>
+                  <GridPane alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="349.0" HBox.hgrow="ALWAYS">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="318.0" minWidth="10.0" prefWidth="138.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="318.0" minWidth="10.0" prefWidth="131.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="189.0" minWidth="10.0" prefWidth="144.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label fx:id="infoLabel" textFill="#616060">
+                           <graphic>
+                              <Separator orientation="VERTICAL" prefHeight="25.0" />
+                           </graphic>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets left="5.0" right="5.0" />
+                     </padding>
+                  </GridPane>
+               </children>
+               <padding>
+                  <Insets left="5.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
