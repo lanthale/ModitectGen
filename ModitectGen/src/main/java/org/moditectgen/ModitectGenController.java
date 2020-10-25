@@ -156,9 +156,17 @@ public class ModitectGenController implements Initializable {
                 }
                 BufferedReader br = new BufferedReader(new FileReader(moduleFile));
                 String line;
+                textArea.appendText("<module>\n");
+                textArea.appendText("\t<artifact>\n");
+                textArea.appendText("\t\t<groupId>xxxx</groupId>\n");
+                textArea.appendText("\t\t<artifactId>xxxxx</artifactId>\n");
+                textArea.appendText("\t</artifact>\n");
+                textArea.appendText("\t<moduleInfoSource>\n");
                 while ((line = br.readLine()) != null) {
-                    textArea.appendText(line + "\n");
+                    textArea.appendText("\t\t"+line + "\n");
                 }
+                textArea.appendText("\t</moduleInfoSource>\n");
+                textArea.appendText("</module>\n");
                 //moduleFile.deleteOnExit();
             } catch (IOException ex) {
                 Logger.getLogger(ModitectGenController.class.getName()).log(Level.SEVERE, null, ex);
