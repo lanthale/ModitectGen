@@ -14,16 +14,16 @@ Example:
 - select the directory of you app which is using moditect e.g. /ModitectGen/ModitectGen/target/modules where all other libs are stored
 - Hit "Generate pm.xml entry"
 - The result looks like:
-  `<module>
-	<artifact>
-		<groupId>xxxx</groupId>
-		<artifactId>xxxxx</artifactId>
-	</artifact>
-	<moduleInfoSource>
-		open module javahelp {
-		    requires transitive java.datatransfer;
-		    requires transitive java.desktop;
-		
-		}
-	</moduleInfoSource>
-  </module>`
+>  <module>
+>	<artifact>
+>		<groupId>xxxx</groupId>
+>		<artifactId>xxxxx</artifactId>
+>	</artifact>
+>	<moduleInfoSource>
+>		open module javahelp {
+>		    requires transitive java.datatransfer;
+>		    requires transitive java.desktop;
+>		
+>		}
+>	</moduleInfoSource>
+>  </module>`
