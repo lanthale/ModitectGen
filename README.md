@@ -15,3 +15,4 @@ Example:
 - Hit "Generate pm.xml entry"
 - The result looks like:
 
+![Screenshot](screenshot-result.png)
