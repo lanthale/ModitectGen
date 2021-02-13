@@ -13,6 +13,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -71,6 +73,8 @@ public class ModitectGenController implements Initializable {
     private CheckBox ignoreMIssingDepsCheckbox;
     @FXML
     private TextField releaseVersionField;
+    @FXML
+    private CheckBox genOpenModuleCheckbox;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -120,6 +124,7 @@ public class ModitectGenController implements Initializable {
             progressInfo.setVisible(true);
             progressInfo.setManaged(true);
             progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
+            progressLabel.setText("Executing...");
             //jdeps --generate-open-module . --multi-release 11 --module-path ./modules ./modules/common-image-3.6.jar
             String tempDirStr = System.getProperty("java.io.tmpdir") + "moditect_" + System.currentTimeMillis();
             boolean mkdir = new File(tempDirStr).mkdir();
@@ -131,52 +136,76 @@ public class ModitectGenController implements Initializable {
             if (ignoreMIssingDepsCheckbox.isSelected()) {
                 ignoreMissingDepsStr = "--ignore-missing-deps";
             }
+            String genOpenModuleStr = "";
+            if (genOpenModuleCheckbox.isSelected()) {
+                genOpenModuleStr = "--generate-open-module";
+            } else {
+                genOpenModuleStr = "--generate-module-info";
+            }
             String multiReleaseStr = "";
             if (multireleaseCheckbox.isSelected()) {
                 multiReleaseStr = "--multi-release " + releaseVersionField.getText();
             }
 
-            String cmd = "jdeps " + ignoreMissingDepsStr + " --generate-open-module " + tempDirStr + " " + multiReleaseStr + " --module-path " + jarDirectory.getAbsolutePath() + " " + selectedJarFile.getAbsolutePath();
-            Runtime rt = Runtime.getRuntime();
-            try {
-                Process exec = rt.exec(cmd);
-                int exitValue = exec.waitFor();
-                if (exitValue != 0) {
-                    util.showError("Cannot execute jdeps " + cmd, new Exception("Error on cmd " + cmd));
-                    return;
-                }
-                File moduleFile = new File(tempDirStr);
-                while (moduleFile.isDirectory() == true) {
-                    File[] directories = moduleFile.listFiles(File::isDirectory);
-                    if (directories.length == 0) {
-                        moduleFile = new File(moduleFile.getAbsolutePath() + "/module-info.java");
-                    } else {
-                        moduleFile = directories[0];
+            String cmd = "jdeps " + ignoreMissingDepsStr + " " + genOpenModuleStr + " " + tempDirStr + " " + multiReleaseStr + " --module-path " + jarDirectory.getAbsolutePath() + " " + selectedJarFile.getAbsolutePath();
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    Runtime rt = Runtime.getRuntime();
+                    Process exec = rt.exec(cmd);
+                    int exitValue = exec.waitFor();
+                    if (exitValue != 0) {
+                        Platform.runLater(() -> {
+                            util.showError("Cannot execute jdeps " + cmd, new Exception("Error on cmd " + cmd));
+                        });
+                        return null;
                     }
+                    File moduleFile = new File(tempDirStr);
+                    while (moduleFile.isDirectory() == true) {
+                        File[] directories = moduleFile.listFiles(File::isDirectory);
+                        if (directories.length == 0) {
+                            moduleFile = new File(moduleFile.getAbsolutePath() + "/module-info.java");
+                        } else {
+                            moduleFile = directories[0];
+                        }
+                    }
+                    BufferedReader br = new BufferedReader(new FileReader(moduleFile));
+                    Platform.runLater(() -> {
+                        try {
+                            String line;
+                            textArea.appendText("<module>\n");
+                            textArea.appendText("\t<artifact>\n");
+                            textArea.appendText("\t\t<groupId>xxxx</groupId>\n");
+                            textArea.appendText("\t\t<artifactId>xxxxx</artifactId>\n");
+                            textArea.appendText("\t</artifact>\n");
+                            textArea.appendText("\t<moduleInfoSource>\n");
+                            while ((line = br.readLine()) != null) {
+                                textArea.appendText("\t\t" + line + "\n");
+                            }
+                            textArea.appendText("\t</moduleInfoSource>\n");
+                            textArea.appendText("</module>\n");
+                        } catch (IOException ex) {
+                            Logger.getLogger(ModitectGenController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    });
+                    //moduleFile.deleteOnExit();                    
+                    return null;
                 }
-                BufferedReader br = new BufferedReader(new FileReader(moduleFile));
-                String line;
-                textArea.appendText("<module>\n");
-                textArea.appendText("\t<artifact>\n");
-                textArea.appendText("\t\t<groupId>xxxx</groupId>\n");
-                textArea.appendText("\t\t<artifactId>xxxxx</artifactId>\n");
-                textArea.appendText("\t</artifact>\n");
-                textArea.appendText("\t<moduleInfoSource>\n");
-                while ((line = br.readLine()) != null) {
-                    textArea.appendText("\t\t"+line + "\n");
-                }
-                textArea.appendText("\t</moduleInfoSource>\n");
-                textArea.appendText("</module>\n");
-                //moduleFile.deleteOnExit();
-            } catch (IOException ex) {
-                Logger.getLogger(ModitectGenController.class.getName()).log(Level.SEVERE, null, ex);
-                util.showError("Cannot execute jdeps!", ex);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ModitectGenController.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
+            };
+            task.setOnFailed((t) -> {
+                Logger.getLogger(ModitectGenController.class.getName()).log(Level.SEVERE, null, t.getSource().getException());
+                util.showError("Cannot execute jdeps!", new Exception(t.getSource().getException()));
                 progressInfo.setVisible(false);
                 progressInfo.setManaged(false);
-            }
+                progressLabel.setText("");
+            });
+            task.setOnSucceeded((t) -> {
+                progressInfo.setVisible(false);
+                progressInfo.setManaged(false);
+                progressLabel.setText("");
+            });
+            Thread th = new Thread(task);
+            th.start();
         } else {
             infoLabel.setText("Please select jar file and directory first!");
         }

@@ -48,7 +48,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pane" prefHeight="500.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.moditectgen.ModitectGenController">
+<AnchorPane fx:id="pane" prefHeight="500.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.moditectgen.ModitectGenController">
    <children>
       <VBox fx:id="vbox" prefHeight="400.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -126,6 +126,11 @@
                                           <Font size="10.0" />
                                        </font>
                                     </CheckBox>
+                                    <CheckBox fx:id="genOpenModuleCheckbox" mnemonicParsing="false" selected="true" text="Generate Open-module">
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
+                                    </CheckBox>
                                  </children>
                               </HBox>
                            </children>
@@ -135,7 +140,7 @@
                </children>
             </HBox>
             <TextArea fx:id="textArea" prefHeight="399.0" prefWidth="700.0" />
-            <HBox prefHeight="27.0" prefWidth="600.0" style="-fx-border-color: lightgrey;">
+            <HBox prefHeight="27.0" prefWidth="600.0" spacing="5.0" style="-fx-border-color: lightgrey;">
                <children>
                   <StackPane fx:id="progressInfo" prefHeight="25.0" prefWidth="204.0">
                      <children>
@@ -165,7 +170,7 @@
                   </GridPane>
                </children>
                <padding>
-                  <Insets left="5.0" />
+                  <Insets bottom="5.0" left="5.0" top="5.0" />
                </padding>
             </HBox>
          </children>
