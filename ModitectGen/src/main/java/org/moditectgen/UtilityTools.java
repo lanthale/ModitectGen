@@ -25,7 +25,7 @@ public class UtilityTools {
     public void showError(String text, Exception e) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Error dialog");
-        alert.setHeaderText(text);
+        alert.setContentText(text);
         //alert.setContentText(text);
 
         VBox dialogPaneContent = new VBox();

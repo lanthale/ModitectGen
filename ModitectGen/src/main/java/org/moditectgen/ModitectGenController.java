@@ -83,6 +83,7 @@ public class ModitectGenController implements Initializable {
         menuBar.useSystemMenuBarProperty().set(true);
         progressInfo.setVisible(false);
         progressInfo.setManaged(false);
+        util=new UtilityTools();
     }
 
     @FXML
@@ -156,7 +157,7 @@ public class ModitectGenController implements Initializable {
                     int exitValue = exec.waitFor();
                     if (exitValue != 0) {
                         Platform.runLater(() -> {
-                            util.showError("Cannot execute jdeps " + cmd, new Exception("Error on cmd " + cmd));
+                            util.showError("Cannot execute " + cmd, new Exception("Error on cmd " + cmd));
                         });
                         return null;
                     }
