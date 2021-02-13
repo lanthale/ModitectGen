@@ -22,10 +22,10 @@ public class UtilityTools {
     public UtilityTools() {
     }
 
-    public void showError(String text, Exception e) {
+    public void showError(String error, String text, Exception e) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Error dialog");
-        alert.setContentText(text);
+        alert.setContentText(error);
         //alert.setContentText(text);
 
         VBox dialogPaneContent = new VBox();

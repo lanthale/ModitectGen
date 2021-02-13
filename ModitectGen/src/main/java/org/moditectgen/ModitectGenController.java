@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import javafx.fxml.FXML;
 
@@ -83,7 +84,7 @@ public class ModitectGenController implements Initializable {
         menuBar.useSystemMenuBarProperty().set(true);
         progressInfo.setVisible(false);
         progressInfo.setManaged(false);
-        util=new UtilityTools();
+        util = new UtilityTools();
     }
 
     @FXML
@@ -130,7 +131,7 @@ public class ModitectGenController implements Initializable {
             String tempDirStr = System.getProperty("java.io.tmpdir") + "moditect_" + System.currentTimeMillis();
             boolean mkdir = new File(tempDirStr).mkdir();
             if (mkdir == false) {
-                util.showError("Cannot create moditect output directory!", new Exception(System.getProperty("java.io.tmpdir") + "moditect"));
+                util.showError("Cannot create moditect output directory!", "Error output directory", new Exception(System.getProperty("java.io.tmpdir") + "moditect"));
                 return;
             }
             String ignoreMissingDepsStr = "";
@@ -156,8 +157,15 @@ public class ModitectGenController implements Initializable {
                     Process exec = rt.exec(cmd);
                     int exitValue = exec.waitFor();
                     if (exitValue != 0) {
+                        StringBuffer output = new StringBuffer();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(exec.getInputStream()));
+
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            output.append(line + "\n");
+                        }
                         Platform.runLater(() -> {
-                            util.showError("Cannot execute " + cmd, new Exception("Error on cmd " + cmd));
+                            util.showError(output.toString(), "Cannot execute " + cmd, new Exception("Error on cmd " + cmd));
                         });
                         return null;
                     }
@@ -195,7 +203,7 @@ public class ModitectGenController implements Initializable {
             };
             task.setOnFailed((t) -> {
                 Logger.getLogger(ModitectGenController.class.getName()).log(Level.SEVERE, null, t.getSource().getException());
-                util.showError("Cannot execute jdeps!", new Exception(t.getSource().getException()));
+                util.showError("Cannot execute jdeps!", "Error in jdeps command", new Exception(t.getSource().getException()));
                 progressInfo.setVisible(false);
                 progressInfo.setManaged(false);
                 progressLabel.setText("");
